@@ -21,6 +21,10 @@
           config.allowUnfree = true;
         };
 
+        mkl-aarch = pkgs.mkl.overrideAttrs (final: prev: {
+          meta.platforms = prev.meta.platforms ++ [ "aarch64-darwin" ];
+        });
+
         svfsi = pkgs.stdenv.mkDerivation {
           name = "svfsi-src";
           version = "latest";
@@ -30,7 +34,8 @@
             pkgs.cmake
             pkgs.hdf5
             pkgs.lapack
-            pkgs.mkl
+            # pkgs.mkl
+            mkl-aarch
             pkgs.mpi
             pkgs.mpich
             pkgs.trilinos
