@@ -35,6 +35,7 @@
             pkgs.hdf5
             pkgs.lapack
             # pkgs.mkl
+            pkgs.darwin.DarwinTools
             mkl-aarch
             pkgs.mpi
             pkgs.mpich
