@@ -54,24 +54,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs",
-        "svfsi-src": "svfsi-src"
-      }
-    },
-    "svfsi-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1680945482,
-        "narHash": "sha256-Rvkzfgn8jRb/1P0wWfkPcjCS3mvjnA/TUbdy55aExQM=",
-        "owner": "djacu",
-        "repo": "svFSI",
-        "rev": "3dd9d154073f902520166fe8160fa8f4fb13c24b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "djacu",
-        "repo": "svFSI",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     },
     "systems": {
