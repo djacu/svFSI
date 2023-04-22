@@ -40,7 +40,12 @@
             pkgs.mpi
             pkgs.mpich
             pkgs.trilinos
-          ];
+          ]
+          ++ (
+            if pkgs.stdenv.isDarwin
+            then [ pkgs.darwin.DarwinTools ]
+            else [ ]
+          );
           configurePhase = ''
             export FC=${pkgs.mpi}/bin/mpif77
             cmake .
