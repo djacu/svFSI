@@ -43,8 +43,9 @@
             make
           '';
           installPhase = ''
-            mkdir -p $out/build
-            cp -r * $out/build/
+            mkdir -p $out
+            ls -FhoA
+            cp -r ./svFSI-build/* $out/
           '';
         };
 
