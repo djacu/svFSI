@@ -24,7 +24,7 @@
         svfsi = pkgs.stdenv.mkDerivation {
           name = "svfsi-src";
           version = "latest";
-          src = self;
+          src = ./.;
           buildInputs = [
             pkgs.boost166
             pkgs.cmake
@@ -49,16 +49,23 @@
           '';
         };
 
+        svfsi-app = pkgs.writeShellApplication {
+          name = "svfsi";
+          text = ''
+            ${svfsi}/bin/svFSI "$@"
+          '';
+        };
       in
       {
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.alejandra
+            svfsi-app
           ];
         };
 
         packages = {
-          inherit svfsi;
+          inherit svfsi svfsi-app;
         };
       }
     );
