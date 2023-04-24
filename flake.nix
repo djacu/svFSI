@@ -25,16 +25,27 @@
           name = "svfsi-src";
           version = "latest";
           src = ./.;
-          buildInputs = [
-            pkgs.boost166
-            pkgs.cmake
-            pkgs.hdf5
-            pkgs.lapack
-            pkgs.mkl
-            pkgs.mpi
-            pkgs.mpich
-            pkgs.trilinos
-          ];
+          buildInputs =
+            [
+              pkgs.blas
+              pkgs.boost166
+              pkgs.cmake
+              pkgs.hdf5
+              pkgs.lapack
+              pkgs.mpi
+              pkgs.mpich
+              pkgs.trilinos
+            ]
+            ++ (
+              if pkgs.stdenv.isLinux
+              then [ pkgs.mkl ]
+              else [ ]
+            )
+            ++ (
+              if pkgs.stdenv.isDarwin
+              then [ pkgs.darwin.DarwinTools ]
+              else [ ]
+            );
           configurePhase = ''
             export FC=${pkgs.mpi}/bin/mpif77
             cmake .
