@@ -24,7 +24,7 @@
         svfsi = pkgs.stdenv.mkDerivation {
           name = "svfsi-src";
           version = "latest";
-          src = self;
+          src = ./.;
           buildInputs =
             [
               pkgs.blas
