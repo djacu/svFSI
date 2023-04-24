@@ -21,31 +21,31 @@
           config.allowUnfree = true;
         };
 
-        mkl-aarch = pkgs.mkl.overrideAttrs (final: prev: {
-          meta.platforms = prev.meta.platforms ++ [ "aarch64-darwin" ];
-        });
-
         svfsi = pkgs.stdenv.mkDerivation {
           name = "svfsi-src";
           version = "latest";
-          src = ./.;
-          buildInputs = [
-            pkgs.boost166
-            pkgs.cmake
-            pkgs.hdf5
-            pkgs.lapack
-            # pkgs.mkl
-            pkgs.darwin.DarwinTools
-            mkl-aarch
-            pkgs.mpi
-            pkgs.mpich
-            pkgs.trilinos
-          ]
-          ++ (
-            if pkgs.stdenv.isDarwin
-            then [ pkgs.darwin.DarwinTools ]
-            else [ ]
-          );
+          src = self;
+          buildInputs =
+            [
+              pkgs.blas
+              pkgs.boost166
+              pkgs.cmake
+              pkgs.hdf5
+              pkgs.lapack
+              pkgs.mpi
+              pkgs.mpich
+              pkgs.trilinos
+            ]
+            ++ (
+              if pkgs.stdenv.isLinux
+              then [ pkgs.mkl ]
+              else [ ]
+            )
+            ++ (
+              if pkgs.stdenv.isDarwin
+              then [ pkgs.darwin.DarwinTools ]
+              else [ ]
+            );
           configurePhase = ''
             export FC=${pkgs.mpi}/bin/mpif77
             cmake .
