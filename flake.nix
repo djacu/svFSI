@@ -5,13 +5,14 @@
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.nix-filter.url = "github:numtide/nix-filter";
 
   outputs =
     { self
     , nixpkgs
     , flake-compat
     , flake-utils
-    ,
+    , nix-filter
     } @ inputs:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -22,9 +23,16 @@
         };
 
         svfsi = pkgs.stdenv.mkDerivation {
-          name = "svfsi-src";
+          pname = "svfsi";
           version = "latest";
-          src = ./.;
+          src = nix-filter.lib {
+            root = ./.;
+            include = [
+              "Code"
+              "Externals"
+              "CMakeLists.txt"
+            ];
+          };
           buildInputs =
             [
               pkgs.blas
@@ -34,7 +42,7 @@
               pkgs.lapack
               pkgs.mpi
               pkgs.mpich
-              pkgs.trilinos
+              pkgs.ninja
             ]
             ++ (
               if pkgs.stdenv.isLinux
@@ -46,37 +54,33 @@
               then [ pkgs.darwin.DarwinTools ]
               else [ ]
             );
-          configurePhase = ''
-            export FC=${pkgs.mpi}/bin/mpif77
-            cmake .
-          '';
-          buildPhase = ''
-            make
+          preConfigure = ''
+            export FC="${pkgs.mpi}/bin/mpif77"
           '';
           installPhase = ''
             mkdir -p $out
-            ls -FhoA
             cp -r ./svFSI-build/* $out/
-          '';
-        };
-
-        svfsi-app = pkgs.writeShellApplication {
-          name = "svfsi";
-          text = ''
-            ${svfsi}/bin/svFSI "$@"
+            ln -s svFSI $out/bin/svfsi
           '';
         };
       in
       {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.alejandra
-            svfsi-app
-          ];
+        devShells = {
+          default = pkgs.mkShell {
+            packages = [
+              svfsi
+            ];
+          };
+          dev = pkgs.mkShell {
+            packages = [
+              pkgs.alejandra
+              svfsi
+            ];
+          };
         };
 
         packages = {
-          inherit svfsi svfsi-app;
+          inherit svfsi;
         };
       }
     );
