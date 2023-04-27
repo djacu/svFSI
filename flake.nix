@@ -69,6 +69,7 @@
           default = pkgs.mkShell {
             packages = [
               svfsi
+              pkgs.mpi
             ];
           };
           dev = pkgs.mkShell {
